@@ -1,9 +1,12 @@
 #!/usr/bin/env python
+# python3 [filename]
 
 # WS server example
 import asyncio
 import websockets
 
+
+ 
 counter = 0
 
 def consumer(message):
@@ -50,6 +53,8 @@ async def server(websocket, path):
 	
 if __name__ == "__main__":
 	start_server = websockets.serve(handler, "localhost", 8765)
+	print('server started at localhost:8765')
 
 	asyncio.get_event_loop().run_until_complete(start_server)
 	asyncio.get_event_loop().run_forever()
+
