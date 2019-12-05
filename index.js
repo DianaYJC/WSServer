@@ -31,7 +31,7 @@ export default class App extends Component {
         socket.onmessage = e =>{
             // console.log (e.data)
             this.setState({counter:e.data})
-            this.rectPosition()
+            this.rectPosition(counter)
         }
         socket.onclose = e =>{
             console.log("Disconnecting")
@@ -115,22 +115,33 @@ export default class App extends Component {
     //     for (j=2; j>=0;j--){
     //         console.log("movingleft",i, j)
     //     }    
-     rectPosition=()=>{
-         const {counter} = this.state;
-         const col = Math.floor( size_container/size_rect)
-         const y = counter % (4* (col -1));
-         const side = Math.floor( y/ col-1);
-         const start = [
-             [0,col-1] // 0 side 
-             [col-1,col-1] // 1 side
-             [col-1 ,0] // 2 side
-             [0,0] // 3rd side
-         ][side]
-         const sign = [ 1,-1, -1,1][side]
-         const d = y % (col-1)
-         start[]
-
+    rectPosition=()=>{
+        const {counter}=this.state;
+        const col = Math.floor(size_container / size_rect);
+        const y = counter % (4 * (col - 1));
+        const side = Math.floor(y / (col - 1));  // 0 | 1 | 2 | 3
+        const start = [
+          [0, col - 1],        // 0
+          [col - 1, col - 1],  // 1
+          [col - 1, 0],        // 2
+          [0, 0],              // 3
+        ][side];
+        const s = [1, -1, -1, 1][side];  // Sign.
+        const d = y % (col - 1);  // Distance.
+        start[side % 2] += s * d;
+        return start;
      }
+     rectStyle=()=>{
+         const {counter}=this.state;
+         const [i,j]=this.rectPosition(counter)
+        console.log ( counter, i, j )
+       return {
+        width: `${size_rect}px`,
+        height:`${size_rect}px`,
+        top:  `${size_rect}`* i,
+        left: ` ${size_rect}`*j
+       }
+}
 
     handleReset=()=>{
         this.setState({counter:0});
@@ -149,7 +160,7 @@ export default class App extends Component {
             <div id="counter"></div>
 	            <div id="counter">{counter}</div>
 		    <div id="container" style={containerStyle}>
-			    <div id="rect" style={this.rectPosition()}></div>
+			    <div id="rect" style={this.rectStyle()}></div>
             </div>
         </div>
         )
